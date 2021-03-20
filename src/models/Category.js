@@ -29,10 +29,21 @@ const CategorySchema = mongoose.Schema({
     }
 });
 
-CategorySchema.pre("save", next => {
+CategorySchema.pre("save", async function() {
     this.slug = string_to_slug(this.name);
+
+    const count = await this.constructor.countDocuments({ 
+        slug: this.slug,
+        _id: {
+            $ne: this.id
+        }
+    });
+    if(count > 0){
+        this.slug = `${this.slug}${count}`;
+    }
+
     this.updatedAt = Date.now();
-    next();
-})
+    
+});
 
 module.exports = mongoose.model("Category", CategorySchema);

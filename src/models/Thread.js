@@ -31,7 +31,7 @@ const ThreadSchema = mongoose.Schema({
     }
 });
 
-ThreadSchema.pre("save", next => {
+ThreadSchema.pre("save", function(){
     this.updatedAt = Date.now();
     next();
 })

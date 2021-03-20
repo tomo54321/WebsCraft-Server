@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const string_to_slug = require("../helpers/string_to_slug");
 
 const ForumSchema = mongoose.Schema({
     name: {
@@ -9,10 +8,6 @@ const ForumSchema = mongoose.Schema({
     description: {
         type: String,
         default: null
-    },
-    slug: {
-        type: String,
-        required: true,
     },
     category: {
         type: mongoose.Types.ObjectId,
@@ -29,8 +24,7 @@ const ForumSchema = mongoose.Schema({
     }
 });
 
-ForumSchema.pre("save", next => {
-    this.slug = string_to_slug(this.name);
+ForumSchema.pre("save", function(next) {
     this.updatedAt = Date.now();
     next();
 })

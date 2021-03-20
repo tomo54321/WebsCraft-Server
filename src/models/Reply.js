@@ -15,7 +15,7 @@ const ReplySchema = mongoose.Schema({
         default: Date.now
     }
 });
-ReplySchema.pre("save", next => {
+ReplySchema.pre("save", function(next) {
     this.updatedAt = Date.now();
     next();
 })
