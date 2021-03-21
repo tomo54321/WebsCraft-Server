@@ -5,12 +5,31 @@ exports.index = async (req, res) => {
 
         const threads = await Thread.find({
             forum: req.parentForum.id
+        }).populate({
+            path: "replies",
+            select: {
+                id: 1,
+                user: 1,
+                reply: 1,
+                createdAt: 1,
+            },
+            populate: {
+                path: "user",
+                select: {
+                    id: 1,
+                    username: 1
+                }
+            }
         });
 
         return res.send(
             threads.map(thread => ({
                 id: thread.id,
                 title: thread.title,
+                totalReplies: thread.replies.length,
+                reply: thread.replies[0],
+                createdAt: thread.createdAt,
+                updatedAt: thread.updatedAt
             }))
         );
 
@@ -33,9 +52,15 @@ exports.get = async (req, res) => {
         }).populate({
             path: "replies",
             populate: {
-                path: "user"
+                path: "user",
+                select: {
+                    id: 1,
+                    username: 1
+                }
             }
-        }).populate("forum");
+        })
+        .slice("replies", 10)
+        .populate("forum", "id name description");
         if(!thread){
             throw new Error("Thread not found!");
         }
@@ -122,6 +147,42 @@ exports.update = async (req, res) => {
 
     }
 };
+
+// Lock a thread.
+exports.lock = async (req, res) => {
+    try {
+        const thread = await Thread.findOne({
+            _id: req.params.threadId,
+            locked: false,
+            forum: req.params.forumId
+        });
+        
+        if(!thread){
+            throw new Error("Thread not found or it is already locked!");
+        }
+        thread.locked = true;
+        await forum.save();
+
+        return res.send({
+            ok: true,
+            thread: {
+                title: thread.name,
+                locked: thread.locked,
+            }
+        })
+
+    } catch (e) {
+        console.error(e);
+        return res.status(500).send({
+            errors: [{
+                param: "server",
+                msg: "Failed to fetch thread, please try again."
+            }]
+        })
+
+    }
+};
+
 
 // Delete a thread
 exports.destroy = async (req, res) => {

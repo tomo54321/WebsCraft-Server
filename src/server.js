@@ -33,7 +33,9 @@ const LoadModels = require("./models/LoadModels");
     try{
         await mongoose.connect(process.env.MONGO_URL, {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+
+            useFindAndModify: false
         })
         console.log("Connected to MongoDB");
     } catch (e) {
@@ -53,6 +55,7 @@ const LoadModels = require("./models/LoadModels");
     app.use("/category", require("./routes/category"));
     app.use("/forum", require("./routes/forum"));
     app.use("/forum/:forumId/thread", require("./middleware/parent-forum"), require("./routes/thread"));
+    app.use("/forum/:forumId/thread/:threadId/reply", require("./middleware/parent-forum"), require("./middleware/parent-thread"), require("./routes/reply"));
 
     /**
      * Begin listening

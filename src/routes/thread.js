@@ -1,6 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { index, create, update, destroy, get } = require("../controllers/thread");
+const { index, create, update, destroy, get, lock } = require("../controllers/thread");
 
 const isLoggedIn = require("../middleware/is-logged-in");
 const hasPermission = require("../middleware/has-permission");
@@ -56,7 +56,7 @@ router.put(
     validateErrors,
     isLoggedIn,
     hasPermission("forum:lockThread"),
-    update
+    lock
 );
 
 router.delete(
