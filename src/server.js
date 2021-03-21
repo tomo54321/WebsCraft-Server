@@ -51,6 +51,7 @@ const LoadModels = require("./models/LoadModels");
      */
     app.use("/auth", require("./routes/auth"));
     app.use("/category", require("./routes/category"));
+    app.use("/forum", require("./routes/forum"));
 
     /**
      * Begin listening

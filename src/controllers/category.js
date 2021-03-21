@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const Forum = require("../models/Forum");
 // All Categories
 exports.index = async (req, res) => {
     try {
@@ -6,14 +7,7 @@ exports.index = async (req, res) => {
         const categories = await Category.find({})
             .populate("forums");
 
-        return res.send(
-            categories.map(category => ({
-                id: category.id,
-                name: category.name,
-                slug: category.slug,
-                forums: category.forums
-            }))
-        );
+        return res.send(categories);
 
     } catch {
         return res.status(500).send({
