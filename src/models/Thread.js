@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ReplySchema = require("./Reply");
+const { ReplySchema } = require("./Reply");
 
 const ThreadSchema = mongoose.Schema({
     title: {
@@ -31,7 +31,7 @@ const ThreadSchema = mongoose.Schema({
     }
 });
 
-ThreadSchema.pre("save", function(){
+ThreadSchema.pre("save", function(next){
     this.updatedAt = Date.now();
     next();
 })

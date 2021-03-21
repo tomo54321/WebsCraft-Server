@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-const ReplySchema = mongoose.Schema({
+const ReplySchema = new mongoose.Schema({
     user: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: true,
     },
     reply: {
-        type: String
+        type: String,
+        required: true,
     },
     createdAt: {
         type: Date,
@@ -20,3 +23,5 @@ ReplySchema.pre("save", function(next) {
     next();
 })
 exports.ReplySchema = ReplySchema;
+
+exports.ReplyModel = mongoose.model("Reply", ReplySchema);
