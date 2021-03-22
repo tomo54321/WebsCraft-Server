@@ -62,7 +62,12 @@ exports.get = async (req, res) => {
         .slice("replies", 10)
         .populate("forum", "id name description");
         if(!thread){
-            throw new Error("Thread not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "thread",
+                    msg:"Thread not found!"
+                }]
+            });
         }
 
         return res.send(thread)
@@ -118,20 +123,36 @@ exports.update = async (req, res) => {
     try {
         const thread = await Thread.findOne({
             _id: req.params.threadId,
-            forum: req.params.forumId
+            forum: req.parentForum.id
         }).populate("category");
         
         if(!thread){
-            throw new Error("Thread not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "thread",
+                    msg:"Thread not found!"
+                }]
+            });
         }
+        
+        // Not their thread and they don't have permission?
+        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+            return res.status(403).send({
+                errors: [{
+                    param: "user",
+                    msg: "You do not have permission to do this."
+                }]
+            })
+        }
+
         thread.title = req.body.title;
         thread.locked = req.body.locked || false;
-        await forum.save();
+        await thread.save();
 
         return res.send({
             ok: true,
             thread: {
-                title: thread.name,
+                title: thread.title,
                 locked: thread.locked,
             }
         })
@@ -153,15 +174,30 @@ exports.lock = async (req, res) => {
     try {
         const thread = await Thread.findOne({
             _id: req.params.threadId,
-            locked: false,
-            forum: req.params.forumId
+            forum: req.parentForum.id
         });
         
-        if(!thread){
-            throw new Error("Thread not found or it is already locked!");
+        if(!thread || thread.locked){
+            return res.status(404).send({
+                errors:[{
+                    param: "thread",
+                    msg:"Thread not found or it is already locked!"
+                }]
+            });
         }
+
+        // Not their thread and they don't have permission?
+        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+            return res.status(403).send({
+                errors: [{
+                    param: "user",
+                    msg: "You do not have permission to do this."
+                }]
+            })
+        }
+
         thread.locked = true;
-        await forum.save();
+        await thread.save();
 
         return res.send({
             ok: true,
@@ -189,7 +225,22 @@ exports.destroy = async (req, res) => {
     try {
         const thread = await Thread.findById(req.params.threadId);
         if(!thread){
-            throw new Error("Thread not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "thread",
+                    msg:"Thread not found!"
+                }]
+            });
+        }
+
+        // Not their thread and they don't have permission?
+        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+            return res.status(403).send({
+                errors: [{
+                    param: "user",
+                    msg: "You do not have permission to do this."
+                }]
+            })
         }
 
         await thread.delete();

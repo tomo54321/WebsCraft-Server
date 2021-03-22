@@ -32,7 +32,12 @@ exports.get = async (req, res) => {
             _id: req.params.forumId
         }).populate("category");
         if(!forum){
-            throw new Error("Forum not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "forum",
+                    msg:"Forum not found!"
+                }]
+            });
         }
 
         return res.send({
@@ -96,7 +101,12 @@ exports.update = async (req, res) => {
         }).populate("category");
         
         if(!forum){
-            throw new Error("Forum not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "forum",
+                    msg:"Forum not found!"
+                }]
+            });
         }
         forum.name = req.body.name;
         forum.description = req.body.description;
@@ -150,7 +160,12 @@ exports.destroy = async (req, res) => {
     try {
         const forum = await Forum.findById(req.params.forumId);
         if(!forum){
-            throw new Error("Forum not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "forum",
+                    msg:"Forum not found!"
+                }]
+            });
         }
 
         await forum.delete();

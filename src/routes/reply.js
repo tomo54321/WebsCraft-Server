@@ -39,14 +39,16 @@ router.put(
         .escape(),
     validateErrors,
     isLoggedIn,
-    hasPermission("forum:updateReply"),
+    // TODO: HANDLE LOGIC
+    hasPermission(["forum:updateReply", "forum:adminUpdateReply"]),
     update
 );
 
 router.delete(
     "/:replyId",
     isLoggedIn,
-    hasPermission("forum:deleteReply"),
+    // TODO: HANDLE LOGIC
+    hasPermission(["forum:deleteReply", "forum:adminDeleteReply"]),
     destroy
 )
 module.exports = router;

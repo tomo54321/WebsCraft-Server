@@ -26,7 +26,12 @@ exports.get = async (req, res) => {
             slug: req.params.categorySlug
         }).populate("forums");
         if(!category){
-            throw new Error("Category not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "category",
+                    msg:"Category not found!"
+                }]
+            });
         }
 
         return res.send({
@@ -77,7 +82,12 @@ exports.update = async (req, res) => {
     try {
         const category = await Category.findById(req.params.categoryId);
         if(!category){
-            throw new Error("Category not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "category",
+                    msg:"Category not found!"
+                }]
+            });
         }
         category.name = req.body.name;
         category.description = req.body.description;
@@ -109,7 +119,12 @@ exports.destroy = async (req, res) => {
     try {
         const category = await Category.findById(req.params.categoryId);
         if(!category){
-            throw new Error("Category not found!");
+            return res.status(404).send({
+                errors:[{
+                    param: "category",
+                    msg:"Category not found!"
+                }]
+            });
         }
 
         await category.delete();

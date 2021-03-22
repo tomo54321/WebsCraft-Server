@@ -31,7 +31,7 @@ exports.index = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    if(req.parentThread.locked){
+    if (req.parentThread.locked) {
         return res.status(403).send({
             errors: [{
                 param: "thread",
@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
         })
     }
 
-    try{
+    try {
         const reply = {
             user: req.auth_user,
             reply: req.body.content
@@ -53,7 +53,7 @@ exports.create = async (req, res) => {
                 id: Date.now(),
                 reply: reply.reply,
                 user: {
-                    id: reply.user.id, 
+                    id: reply.user.id,
                     username: reply.user.username
                 }
             }
@@ -70,8 +70,8 @@ exports.create = async (req, res) => {
 
 };
 
-exports.update = async (req, res) => { 
-    if(req.parentThread.locked){
+exports.update = async (req, res) => {
+    if (req.parentThread.locked) {
         return res.status(403).send({
             errors: [{
                 param: "thread",
@@ -108,8 +108,8 @@ exports.update = async (req, res) => {
     }
 }
 
-exports.destroy = async (req, res) => { 
-    if(req.parentThread.locked){
+exports.destroy = async (req, res) => {
+    if (req.parentThread.locked) {
         return res.status(403).send({
             errors: [{
                 param: "thread",
@@ -118,9 +118,9 @@ exports.destroy = async (req, res) => {
         })
     }
 
-    try{
+    try {
 
-        if(req.parentThread.replies[0].id === req.params.replyId){
+        if (req.parentThread.replies[0].id === req.params.replyId) {
             return res.status(400).send({
                 errors: [{
                     param: "replyId",
@@ -130,7 +130,7 @@ exports.destroy = async (req, res) => {
         }
 
         const replyIndex = req.parentThread.replies.findIndex(reply => reply.id === req.params.replyId);
-        if(replyIndex === -1){
+        if (replyIndex === -1) {
             return res.status(404).send({
                 errors: [{
                     param: "replyId",
@@ -161,4 +161,4 @@ exports.destroy = async (req, res) => {
 function paginate(array, page_size, page_number) {
     // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
     return array.slice((page_number - 1) * page_size, page_number * page_size);
-  }
+}

@@ -43,7 +43,7 @@ router.put(
         .withMessage("Please enter a valid lock status"),
     validateErrors,
     isLoggedIn,
-    hasPermission("forum:updateThread"),
+    hasPermission(["forum:updateThread", "forum:adminUpdateThread"]),
     update
 );
 
@@ -55,14 +55,14 @@ router.put(
         .withMessage("Please enter a valid lock status"),
     validateErrors,
     isLoggedIn,
-    hasPermission("forum:lockThread"),
+    hasPermission(["forum:lockThread", "forum:adminLockThread"]),
     lock
 );
 
 router.delete(
     "/:threadId",
     isLoggedIn,
-    hasPermission("forum:deleteThread"),
+    hasPermission(["forum:deleteThread", "forum:adminDeleteThread"]),
     destroy
 )
 module.exports = router;
