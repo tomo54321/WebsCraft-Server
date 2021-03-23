@@ -136,7 +136,7 @@ exports.update = async (req, res) => {
         }
         
         // Not their thread and they don't have permission?
-        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateThread")){
             return res.status(403).send({
                 errors: [{
                     param: "user",
@@ -187,7 +187,7 @@ exports.lock = async (req, res) => {
         }
 
         // Not their thread and they don't have permission?
-        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminLockThread")){
             return res.status(403).send({
                 errors: [{
                     param: "user",
@@ -234,7 +234,7 @@ exports.destroy = async (req, res) => {
         }
 
         // Not their thread and they don't have permission?
-        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+        if(thread.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminDeleteThread")){
             return res.status(403).send({
                 errors: [{
                     param: "user",

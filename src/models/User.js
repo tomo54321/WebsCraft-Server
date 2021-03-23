@@ -20,6 +20,30 @@ const UserSchema = mongoose.Schema({
             type: String
         }
     ],
+    bans:[
+        {
+            active: {
+                type: Boolean,
+                default: true
+            },
+            banned_from: {
+                type: Date,
+                default: Date.now
+            },
+            expires: {
+                type: Date,
+                default: null
+            },
+            reason: {
+                type: String,
+                default: null
+            },
+            banned_by: {
+                type: mongoose.Types.ObjectId,
+                ref: "User"
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now

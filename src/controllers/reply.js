@@ -80,6 +80,16 @@ exports.update = async (req, res) => {
         })
     }
 
+    const reply = req.parentThread.replies.filter(reply => reply.id === req.params.replyId);
+    if(reply.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminUpdateReply")){
+        return res.status(403).send({
+            errors: [{
+                param: "user",
+                msg: "You do not have permission to do this."
+            }]
+        })
+    }
+
     try {
         await Thread.findOneAndUpdate({
             _id: req.parentThread.id,
@@ -114,6 +124,16 @@ exports.destroy = async (req, res) => {
             errors: [{
                 param: "thread",
                 msg: "Cannot delete reply because the thread is locked."
+            }]
+        })
+    }
+
+    const reply = req.parentThread.replies.filter(reply => reply.id === req.params.replyId);
+    if(reply.user !== req.auth_user && req.auth_user.permissions.includes("forum:adminDeleteReply")){
+        return res.status(403).send({
+            errors: [{
+                param: "user",
+                msg: "You do not have permission to do this."
             }]
         })
     }

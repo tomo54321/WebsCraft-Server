@@ -45,6 +45,19 @@ exports.signin = async (req, res) => {
             })
         }
 
+        // Handle Bans
+        const activeBan = user.bans.filter(ban => ban.active || ban.expires < Date.now());
+        if(activeBan.length > 0){
+            return res.status(403).send({
+                errors: [{
+                    param: "ban",
+                    msg: "You are banned.",
+                    reason: activeBan[0].reason,
+                    expiry: activeBan[0].expires
+                }]
+            }) 
+        }
+
         req.session.user_id = user.id;
 
         return res.send({

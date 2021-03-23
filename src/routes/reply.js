@@ -39,7 +39,6 @@ router.put(
         .escape(),
     validateErrors,
     isLoggedIn,
-    // TODO: HANDLE LOGIC
     hasPermission(["forum:updateReply", "forum:adminUpdateReply"]),
     update
 );
@@ -47,7 +46,6 @@ router.put(
 router.delete(
     "/:replyId",
     isLoggedIn,
-    // TODO: HANDLE LOGIC
     hasPermission(["forum:deleteReply", "forum:adminDeleteReply"]),
     destroy
 )
